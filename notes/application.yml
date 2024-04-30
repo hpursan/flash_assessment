@@ -1,0 +1,22 @@
+spring:
+  # im not sure if these even work yet. nothing seems to happen to setup the db
+  datasource:
+    url: jdbc:sqlserver://localhost:1433;databaseName=FLASH_DB;encrypt:false
+    username: sa
+    password: P4$$word123
+    driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+  sql:
+    init:
+      schema-location: classpath:schema.sql
+      data-locations: classpath:data.sql
+
+  logging:
+    level:
+      org.springframework.jdbc: DEBUG
+      org.springframework.web: DEBUG
+      org.springframework.jdbc.core: TRACE
+
+  jpa:
+    hibernate:
+      ddl-auto: update

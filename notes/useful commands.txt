@@ -1,0 +1,11 @@
+# pull and run the mssql server as a docker container
+docker pull mcr.microsoft.com/mssql/server
+sudo docker run -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=P4$$word123' -p 1433:1433 -d --name sql_server_container mcr.microsoft.com/mssql/server:latest
+
+# get the ip of the container
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' sql_server_container
+# 172.17.0.2
+
+# using sqsh to interact with the db: https://github.com/vonloxley/sqsh/tree/master
+sqsh -S 172.17.0.2 -U sa -P 'P4$$word123'
+
