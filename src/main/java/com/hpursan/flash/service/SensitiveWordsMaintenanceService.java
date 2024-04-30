@@ -10,7 +10,7 @@ import com.hpursan.flash.model.SensitiveWord;
 
 @Service
 @RequiredArgsConstructor
-public class SensitiveWordsMaintainanceService {
+public class SensitiveWordsMaintenanceService {
     private final SensitiveWordRepository sensitiveWordRepository;
 
     public List<SensitiveWord> listAllSensitiveWords() {
