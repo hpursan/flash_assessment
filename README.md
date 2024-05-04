@@ -59,8 +59,12 @@ The application handles two custom exceptions:
 
 ## Services
 
-- **SensitiveWordsMaintenanceService:** Service for managing sensitive words including CRUD operations.
-- **SensitiveWordsReplacementService:** Service for redacting sensitive words from messages.
+The services have been separated into interfaces and implementations for better modularity, flexibility, and testability:
+
+- **SensitiveWordsMaintenanceService:** Interface for managing sensitive words including CRUD operations.
+- **SensitiveWordsMaintenanceServiceImpl:** Implementation of SensitiveWordsMaintenanceService.
+- **SensitiveWordsReplacementService:** Interface for redacting sensitive words from messages.
+- **SensitiveWordsReplacementServiceImpl:** Implementation of SensitiveWordsReplacementService.
 
 ## Configuration
 
@@ -88,6 +92,8 @@ The application follows a layered architecture with clear separation of concerns
 - **Repository Layer:** Handles data access and persistence logic, abstracting the underlying data source.
 - **Exception Handling:** Custom exception classes and global exception handler are implemented to provide meaningful error responses.
 - **DTOs and Entities:** Data Transfer Objects (DTOs) are used for data exchange between layers, and entities represent domain objects.
+
+The separation of services into interfaces and implementations promotes modularity, flexibility, and testability. It adheres to best practices in software design, allowing for easier maintenance and extensibility.
 
 The application leverages Spring Boot's auto-configuration and dependency injection features for rapid development and easy integration with other Spring components. It also adopts RESTful principles for designing API endpoints, ensuring simplicity, scalability, and ease of use.
 
