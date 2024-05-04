@@ -19,6 +19,10 @@ public class SensitiveWordsMaintenanceService {
         return sensitiveWordRepository.findAll();
     }
 
+    public List<SensitiveWord> listAllSensitiveWordsOrderByLengthWord(Boolean asc) {
+        return sensitiveWordRepository.findAllOrderByLengthWord(asc);
+    }
+
     public SensitiveWord getSensitiveWordById(Long id) {
         SensitiveWord sensitiveWord = sensitiveWordRepository.findById(id);
         if (sensitiveWord == null) {
