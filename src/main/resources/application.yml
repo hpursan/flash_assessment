@@ -2,6 +2,7 @@
 server:
   servlet:
     context-path: /api/v1
+#    context-path-internal-api: /api/v1/internal
 
 spring:
   jpa:

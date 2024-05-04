@@ -1,5 +1,7 @@
 package com.hpursan.flash.controller;
 
+import com.hpursan.flash.exception.SensitiveWordAlreadyExistsException;
+import com.hpursan.flash.exception.SensitiveWordNotFoundException;
 import com.hpursan.flash.model.SensitiveWord;
 import com.hpursan.flash.service.SensitiveWordsMaintenanceService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/internal")
+@RequestMapping("/api/v1/internal")
 @AllArgsConstructor
 public class SensitiveWordsMaintenanceController {
     private final SensitiveWordsMaintenanceService maintenanceService;
@@ -35,8 +37,12 @@ public class SensitiveWordsMaintenanceController {
             @ApiResponse(description = "A word with the given id was not found", responseCode = "404") // not yet implemented
     })
     public ResponseEntity<SensitiveWord> getSensitiveWordById(@PathVariable("id") Long id) {
-        SensitiveWord word = maintenanceService.getSensitiveWordById(id);
-        return ResponseEntity.ok(word);
+        try {
+            SensitiveWord word = maintenanceService.getSensitiveWordById(id);
+            return ResponseEntity.ok(word);
+        } catch (SensitiveWordNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     @PostMapping
@@ -48,7 +54,7 @@ public class SensitiveWordsMaintenanceController {
         try {
             SensitiveWord createdSensitiveWord = maintenanceService.createSensitiveWord(word);
             return new ResponseEntity<>(createdSensitiveWord, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
+        } catch (SensitiveWordAlreadyExistsException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
@@ -61,27 +67,22 @@ public class SensitiveWordsMaintenanceController {
     public ResponseEntity<SensitiveWord> updateSensitiveWord(@PathVariable("id") Long id, @Valid @RequestBody SensitiveWord sensitiveWord) {
         try {
             return ResponseEntity.ok(maintenanceService.updateSensitiveWord(id, sensitiveWord));
-        } catch (IllegalArgumentException e) {
+        } catch (SensitiveWordNotFoundException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a sensitive word", description = "Delete a sensitive word", responses = {
             @ApiResponse(description = "Sensitive word was successfully deleted", responseCode = "204"),
-            @ApiResponse(description = "Sensitive word with given id was not found", responseCode = "404"),
-            @ApiResponse(description = "Unexpected error occurred", responseCode = "500")
+            @ApiResponse(description = "Sensitive word with given id was not found", responseCode = "404")
     })
     public ResponseEntity<SensitiveWord> deleteSensitiveWord(@PathVariable("id") Long id) {
         try {
             maintenanceService.deleteSensitiveWord(id);
             return ResponseEntity.noContent().build();
-        } catch (IllegalArgumentException e) {
+        } catch (SensitiveWordNotFoundException e) {
             return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
         }
     }
 

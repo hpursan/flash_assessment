@@ -1,5 +1,7 @@
 package com.hpursan.flash.service;
 
+import com.hpursan.flash.exception.SensitiveWordAlreadyExistsException;
+import com.hpursan.flash.exception.SensitiveWordNotFoundException;
 import com.hpursan.flash.repository.SensitiveWordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,13 +20,17 @@ public class SensitiveWordsMaintenanceService {
     }
 
     public SensitiveWord getSensitiveWordById(Long id) {
-        return sensitiveWordRepository.findById(id);
+        SensitiveWord sensitiveWord = sensitiveWordRepository.findById(id);
+        if (sensitiveWord == null) {
+            throw new SensitiveWordNotFoundException(id);
+        }
+        return sensitiveWord;
     }
 
     public SensitiveWord createSensitiveWord(String word) {
         // Check if the word already exists in the database
         if (sensitiveWordRepository.findByWord(word) != null) {
-            throw new IllegalArgumentException("Sensitive word already exists");
+            throw new SensitiveWordAlreadyExistsException(word);
         }
 
         SensitiveWord sensitiveWord = new SensitiveWord(word);
@@ -38,7 +44,7 @@ public class SensitiveWordsMaintenanceService {
             sensitiveWord.setWord(updateWord.getWord());
             return sensitiveWordRepository.save(sensitiveWord);
         } else {
-            throw new IllegalArgumentException("Sensitive word with id " + id + " does not exist");
+            throw new SensitiveWordNotFoundException(id);
         }
     }
 
@@ -47,7 +53,7 @@ public class SensitiveWordsMaintenanceService {
         if (sensitiveWord != null) {
             sensitiveWordRepository.deleteById(id);
         } else {
-            throw new IllegalArgumentException("Sensitive word with id " + id + " does not exist");
+            throw new SensitiveWordNotFoundException(id);
         }
     }
 }
