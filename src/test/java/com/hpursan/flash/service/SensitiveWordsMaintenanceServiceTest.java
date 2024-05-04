@@ -3,6 +3,8 @@ package com.hpursan.flash.service;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import com.hpursan.flash.exception.SensitiveWordAlreadyExistsException;
+import com.hpursan.flash.exception.SensitiveWordNotFoundException;
 import com.hpursan.flash.repository.SensitiveWordRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,11 +43,11 @@ public class SensitiveWordsMaintenanceServiceTest {
     }
 
     @Test
-    void testCreateSensitiveWord_andAlreadyExists_ShouldThrowIllegalArgumentException() {
+    void testCreateSensitiveWord_andAlreadyExists_ShouldThrowSensitiveWordAlreadyExistsException() {
         String word = "existingWord";
         when(sensitiveWordRepository.findByWord(word)).thenReturn(new SensitiveWord(1L, word));
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> maintenanceService.createSensitiveWord(word));
-        assertTrue(ex.getMessage().contains("Sensitive word already exists"));
+        SensitiveWordAlreadyExistsException ex = assertThrows(SensitiveWordAlreadyExistsException.class, () -> maintenanceService.createSensitiveWord(word));
+        assertTrue(ex.getMessage().contains("Sensitive word " + word + " already exists"));
     }
 
     @Test
@@ -63,6 +65,13 @@ public class SensitiveWordsMaintenanceServiceTest {
     }
 
     @Test
+    void testGetSensitiveWordById_ThrowsSensitiveWordNotFoundException() {
+        when(sensitiveWordRepository.findById(anyLong())).thenReturn(null);
+        SensitiveWordNotFoundException ex = assertThrows(SensitiveWordNotFoundException.class, () -> maintenanceService.getSensitiveWordById(1L));
+        assertTrue(ex.getMessage().contains("Sensitive word with id 1 not found"));
+    }
+
+    @Test
     void testUpdateSensitiveWordById_Success() {
         SensitiveWord original = new SensitiveWord(1L, "Existing word");
         SensitiveWord updates = new SensitiveWord(1L, "Update word");
@@ -76,11 +85,11 @@ public class SensitiveWordsMaintenanceServiceTest {
     }
 
     @Test
-    void testUpdateSensitiveWordById_andDoesNotExist_ShouldThrowIllegalArgumentException() {
+    void testUpdateSensitiveWordById_andDoesNotExist_ShouldThrowSensitiveWordNotFoundException() {
         SensitiveWord updates = new SensitiveWord(1L, "Update word");
         when(sensitiveWordRepository.findById(1L)).thenReturn(null);
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> maintenanceService.updateSensitiveWord(1L, updates));
-        assertTrue(ex.getMessage().contains("Sensitive word with id 1 does not exist"));
+        SensitiveWordNotFoundException ex = assertThrows(SensitiveWordNotFoundException.class, () -> maintenanceService.updateSensitiveWord(1L, updates));
+        assertTrue(ex.getMessage().contains("Sensitive word with id 1 not found"));
     }
 
     @Test
@@ -92,10 +101,10 @@ public class SensitiveWordsMaintenanceServiceTest {
     }
 
     @Test
-    void testDeleteSensitiveWordById_andDoesNotExist_ShouldThrowIllegalArgumentException() {
+    void testDeleteSensitiveWordById_andDoesNotExist_ShouldThrowSensitiveWordNotFoundException() {
         when(sensitiveWordRepository.findById(1L)).thenReturn(null);
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> maintenanceService.deleteSensitiveWord(1L));
-        assertTrue(ex.getMessage().contains("Sensitive word with id 1 does not exist"));
+        SensitiveWordNotFoundException ex = assertThrows(SensitiveWordNotFoundException.class, () -> maintenanceService.deleteSensitiveWord(1L));
+        assertTrue(ex.getMessage().contains("Sensitive word with id 1 not found"));
     }
     // More tests to follow
 }
