@@ -23,7 +23,7 @@ public class SensitiveWordsMaintenanceServiceTest {
     private SensitiveWordRepository sensitiveWordRepository;
 
     @InjectMocks
-    private SensitiveWordsMaintenanceService maintenanceService;
+    private SensitiveWordsMaintenanceServiceImpl maintenanceService;
 
     @BeforeEach
     void setUp() {

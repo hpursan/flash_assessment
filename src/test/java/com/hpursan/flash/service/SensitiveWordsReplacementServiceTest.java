@@ -16,10 +16,10 @@ import static org.mockito.Mockito.when;
 public class SensitiveWordsReplacementServiceTest {
 
     @Mock
-    SensitiveWordsMaintenanceService sensitiveWordsMaintenanceService;
+    SensitiveWordsMaintenanceServiceImpl sensitiveWordsMaintenanceService;
 
     @InjectMocks
-    SensitiveWordsReplacementService sensitiveWordsReplacementService;
+    SensitiveWordsReplacementServiceImpl sensitiveWordsReplacementService;
 
     @BeforeEach
     void setUp() {
