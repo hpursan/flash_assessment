@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Optional;
+
 import com.hpursan.flash.mapper.SensitiveWordRowMapper;
 
 @Repository
@@ -20,6 +22,15 @@ public class JdbcSensitiveWordRepository implements SensitiveWordRepository {
     @Override
     public List<SensitiveWord> findAll() {
         return jdbcTemplate.query("SELECT * FROM sensitive_words", new SensitiveWordRowMapper());
+    }
+
+    @Override
+    public List<SensitiveWord> findAllOrderByLengthWord(Boolean asc) {
+        String sql = "SELECT * FROM sensitive_words order by length(word)";
+        if (!asc) {
+            sql += " DESC";
+        }
+        return jdbcTemplate.query(sql, new SensitiveWordRowMapper());
     }
 
     @Override

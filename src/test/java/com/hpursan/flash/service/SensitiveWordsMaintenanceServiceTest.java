@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class SensitiveWordsMaintenanceServiceTest {
@@ -106,5 +107,40 @@ public class SensitiveWordsMaintenanceServiceTest {
         SensitiveWordNotFoundException ex = assertThrows(SensitiveWordNotFoundException.class, () -> maintenanceService.deleteSensitiveWord(1L));
         assertTrue(ex.getMessage().contains("Sensitive word with id 1 not found"));
     }
+
+    @Test
+    void testListAllSensitiveWordsOrderByLengthWord_Desc_Success() {
+        SensitiveWord long_word = new SensitiveWord(1L, "long word");
+        SensitiveWord longer_word = new SensitiveWord(2L, "longer word");
+        SensitiveWord longest_word = new SensitiveWord(3L, "longest word");
+
+        List<SensitiveWord> expectedList = Arrays.asList(longest_word, longer_word, long_word);
+
+        when(sensitiveWordRepository.findAllOrderByLengthWord(false)).thenReturn(expectedList);
+
+        List<SensitiveWord> resultList = maintenanceService.listAllSensitiveWordsOrderByLengthWord(false);
+
+        assertEquals(resultList.size(), 3);
+        assertEquals(expectedList, resultList);
+    }
+
+    @Test
+    void testListAllSensitiveWordsOrderByLengthWord_Asc_Success() {
+        SensitiveWord longWord = new SensitiveWord(1L, "long word");
+        SensitiveWord longerWord = new SensitiveWord(2L, "longer word");
+        SensitiveWord longestWord = new SensitiveWord(3L, "longest word");
+
+        List<SensitiveWord> expectedList = Arrays.asList(longWord, longerWord, longestWord);
+
+        when(sensitiveWordRepository.findAllOrderByLengthWord(eq(true))).thenReturn(expectedList);
+
+        List<SensitiveWord> resultList = maintenanceService.listAllSensitiveWordsOrderByLengthWord(true);
+
+        assertEquals(3, resultList.size());
+        assertEquals(expectedList, resultList);
+    }
+
+
+
     // More tests to follow
 }
