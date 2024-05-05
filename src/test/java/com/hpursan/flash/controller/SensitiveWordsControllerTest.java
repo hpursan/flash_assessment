@@ -24,7 +24,7 @@ public class SensitiveWordsControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    void testRedactSensitiveWords_Success() throws Exception {
+    void shouldRedactSensitiveWordsSuccessfully() throws Exception {
         String inputMessage = "This is a sensitive message.";
         String redactedMessage = "This is a ******* message.";
 
@@ -39,7 +39,7 @@ public class SensitiveWordsControllerTest {
     }
 
     @Test
-    void testRedactSensitiveWords_Error() throws Exception {
+    void shouldHandleRedactionError() throws Exception {
         String inputMessage = "This is a sensitive message.";
 
         when(sensitiveWordsReplacementService.redactSensitiveWords(anyString()))
