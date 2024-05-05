@@ -13,8 +13,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -88,6 +89,8 @@ public class SensitiveWordsMaintenanceControllerTest {
         mockMvc.perform(get("/api/v1/internal/{id}",anyLong())).andExpect(status().isNotFound());
     }
 
+
+
     @Test
     void shouldCreateSensitiveWordSuccessfully() throws Exception {
         SensitiveWord sensitiveWord = new SensitiveWord(1L, "word1");
@@ -111,6 +114,18 @@ public class SensitiveWordsMaintenanceControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("word1"))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldThrowBadRequestWhenUnexpectedError() throws Exception {
+
+        when(maintenanceService.createSensitiveWord(anyString()))
+                .thenThrow(new RuntimeException("Unexpected error"));
+
+        mockMvc.perform(post("/api/v1/internal")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("word1"))
+                .andExpect(status().isBadRequest());;
     }
 
     @Test

@@ -12,17 +12,13 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: none
+    initialize: always
 
   datasource:
-    url: jdbc:h2:mem:flash_db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    driverClassName: org.h2.Driver
+    url: jdbc:sqlserver://localhost:1433;databaseName=flash;schema=dbo;encrypt=false
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
     username: sa
-    password: password
-
-  sql:
-    init:
-      schema-locations: classpath:schema.sql
-      data-locations: classpath:data.sql
+    password: P4$$word123
 
 # actuator config
 # the management.info.env.enabled needed to be set to true to show info
