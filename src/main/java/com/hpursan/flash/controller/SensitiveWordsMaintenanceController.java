@@ -60,7 +60,8 @@ public class SensitiveWordsMaintenanceController {
     @PostMapping
     @Operation(summary = "Create a new sensitive word", description = "Add a new sensitive word", responses = {
             @ApiResponse(description = "A new sensitive word was successfully added", responseCode = "201"),
-            @ApiResponse(description = "Unable to add a word that already exists", responseCode = "400")
+            @ApiResponse(description = "Unable to add a word that already exists", responseCode = "400"),
+            @ApiResponse(description = "Unable to add a word due to an unexpected error", responseCode = "500")
     })
     public ResponseEntity<SensitiveWord> createSensitiveWord(@Valid @RequestBody String word) {
         try {
@@ -70,6 +71,10 @@ public class SensitiveWordsMaintenanceController {
             return new ResponseEntity<>(createdSensitiveWord, HttpStatus.CREATED);
         } catch (SensitiveWordAlreadyExistsException e) {
             log.warn("Sensitive word already exists: {}", word);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (Exception e) {
+            log.warn("An unexpected error occurred when attempting to add {}", word);
+            log.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
