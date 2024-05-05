@@ -1,11 +1,14 @@
 # Sensitive Words API
 
-This repository hosts a Spring Boot application that offers RESTful APIs for sensitive word management and redaction of sensitive content from messages.
+This repository contains a Spring Boot application that provides RESTful APIs for managing sensitive words and redacting sensitive content from messages.
 
 ## Table of Contents
 
 - [Overview](#overview)
+- [Prerequisites](#prerequisites)
 - [Endpoints](#endpoints)
+    - [External API](#external-api)
+    - [Internal API](#internal-api)
 - [Exception Handling](#exception-handling)
 - [DTOs and Entities](#dtos-and-entities)
 - [Repositories](#repositories)
@@ -16,38 +19,59 @@ This repository hosts a Spring Boot application that offers RESTful APIs for sen
 - [Design and Architectural Approach](#design-and-architectural-approach)
 - [Further Improvements](#further-improvements)
 
+
+
 ## Overview
 
-The application facilitates two distinct sets of APIs:
+This application provides two sets of APIs:
 
-- **External API:** Used for redacting sensitive words from messages.
-- **Internal API:** Provides CRUD operations for managing sensitive words.
+- **External API:** Exposes endpoints for redacting sensitive words from messages.
+- **Internal API:** Exposes endpoints for managing sensitive words including CRUD operations.
+
+## Prerequisites
+
+The application requires a connection to a MSSQL database. To set up the database:
+
+- Run the MSSQL server in a Docker container locally using the following command:
+
+```shell
+docker run -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=P4$$word123' -p 1433:1433 -d --name sql_server_container mcr.microsoft.com/mssql/server:latest
+```
+
+- The database schema and initial data setup are included in the `schema.sql` script located in the `resources` directory.
+- Update the connection string in `application.yml` with the appropriate database URL:
+
+```yaml
+datasource:
+  url: jdbc:sqlserver://localhost:1433;databaseName=flash;schema=dbo;encrypt=false
+  driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+```
 
 ## Endpoints
 
 ### External API
 
-- **POST /api/v1/external:** Redacts sensitive words from the provided input message.
+- **POST /api/v1/external:** Redact sensitive words from the given input message.
 
 ### Internal API
 
-- **GET /api/v1/internal:** Retrieves all sensitive words.
-- **GET /api/v1/internal/{id}:** Retrieves a sensitive word by its ID.
-- **POST /api/v1/internal:** Creates a new sensitive word.
-- **PUT /api/v1/internal/{id}:** Updates a sensitive word.
-- **DELETE /api/v1/internal/{id}:** Deletes a sensitive word.
+- **GET /api/v1/internal:** List all sensitive words.
+- **GET /api/v1/internal/{id}:** Get a sensitive word by its ID.
+- **POST /api/v1/internal:** Create a new sensitive word.
+- **PUT /api/v1/internal/{id}:** Update a sensitive word.
+- **DELETE /api/v1/internal/{id}:** Delete a sensitive word.
 
 ## Exception Handling
 
-Custom exceptions are employed:
+The application handles two custom exceptions:
 
-- `SensitiveWordAlreadyExistsException`: Raised when attempting to create an existing sensitive word.
-- `SensitiveWordNotFoundException`: Raised when a sensitive word with the given ID is not found.
+- `SensitiveWordAlreadyExistsException`: Thrown when attempting to create a sensitive word that already exists.
+- `SensitiveWordNotFoundException`: Thrown when a sensitive word with the given ID is not found.
 
 ## DTOs and Entities
 
-- **RedactedMessageDTO:** Represents a redacted message.
-- **SensitiveWord:** Entity class for a sensitive word.
+- **RedactedMessageDTO:** Data Transfer Object representing a redacted message.
+- **SensitiveWord:** Entity class representing a sensitive word.
 
 ## Repositories
 
@@ -56,45 +80,51 @@ Custom exceptions are employed:
 
 ## Services
 
-Services are divided into interfaces and implementations for modularity:
+The services are divided into interfaces and implementations for better modularity, flexibility, and testability:
 
-- **SensitiveWordsMaintenanceService:** Manages sensitive words with CRUD operations.
-- **SensitiveWordsReplacementService:** Handles redaction of sensitive words from messages.
+- **SensitiveWordsMaintenanceService:** Interface for managing sensitive words including CRUD operations.
+- **SensitiveWordsMaintenanceServiceImpl:** Implementation of SensitiveWordsMaintenanceService.
+- **SensitiveWordsReplacementService:** Interface for redacting sensitive words from messages.
+- **SensitiveWordsReplacementServiceImpl:** Implementation of SensitiveWordsReplacementService.
 
 ## Configuration
 
-- **Database Configuration:** Utilizes Microsoft SQL Server with schema initialization.
-- **Actuator Configuration:** Exposes actuator endpoints for health checks and environment information.
+- **Database Configuration:** Utilizes Microsoft SQL Server as the database with schema initialization.
+- **Actuator Configuration:** Exposes actuator endpoints for health check and environment information.
 
 ### Swagger Documentation
 
-Swagger provides API documentation accessible via the `/swagger-ui.html` endpoint post-application startup.
+The API documentation is available using Swagger. Access it by navigating to the `/swagger-ui.html` endpoint after starting the application.
 
 ### Actuator Endpoints
 
-Actuator endpoints offer monitoring and management capabilities:
+The application provides Actuator endpoints for monitoring and managing the application:
 
-- **/actuator/health:** Indicates application health.
-- **/actuator/info:** Supplies custom application information.
-- **/actuator/env:** Presents environment information.
+- **/actuator/health:** Provides information about application health.
+- **/actuator/info:** Provides custom application information.
+- **/actuator/env:** Provides environment information.
 
 ### Design and Architectural Approach
 
-The application follows a layered architecture:
+The application follows a layered architecture for clear separation of concerns:
 
-- **Controller Layer:** Handles HTTP requests and delegates logic to services.
-- **Service Layer:** Contains business logic and orchestrates interactions.
-- **Repository Layer:** Manages data access and persistence logic.
-- **Exception Handling:** Custom exceptions and global handler provide error responses.
-- **DTOs and Entities:** Facilitate data exchange and represent domain objects.
+- **Controller Layer:** Handles HTTP requests and delegates business logic to the service layer.
+- **Service Layer:** Contains business logic and orchestrates interactions between repositories and other components.
+- **Repository Layer:** Handles data access and persistence logic, abstracting the underlying data source.
+- **Exception Handling:** Custom exception classes and global exception handler provide meaningful error responses.
+- **DTOs and Entities:** Data Transfer Objects (DTOs) facilitate data exchange between layers, and entities represent domain objects.
 
-### Further Improvements
+The separation of services into interfaces and implementations promotes modularity, flexibility, and testability. It adheres to best practices in software design, allowing for easier maintenance and extensibility.
 
-Additional enhancements for future consideration:
+The application leverages Spring Boot's auto-configuration and dependency injection features for rapid development and easy integration with other Spring components. It also adopts RESTful principles for designing API endpoints, ensuring simplicity, scalability, and ease of use.
 
-- **Containerization and Deployment:** Splitting the application into separate services, enabling independent scaling and containerization.
-- **Database Functionality:** Extending compatibility to other databases, implementing caching, sharding, and resilience measures.
-- **Microservices:** Utilizing messaging services for inter-service communication.
-- **Security:** Implementing authentication and authorization for production readiness.
+## Further Improvements
 
-For detailed insights into each component, refer to the corresponding classes in the source code.
+Consider the following enhancements for future iterations:
+
+- **Containerization and Deployment:** Split the application into separate services for Maintenance and Redaction, enabling independent scaling and containerization.
+- **Database Functionality:** Extend compatibility to other databases, implement caching, sharding, and resilience measures.
+- **Microservices:** Utilize messaging services for inter-service communication.
+- **Security:** Implement authentication and authorization for production readiness.
+
+For detailed insights into each component and their functionalities, refer to the corresponding classes in the source code.
