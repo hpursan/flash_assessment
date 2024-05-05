@@ -5,19 +5,19 @@ This repository contains a Spring Boot application that provides RESTful APIs fo
 ## Table of Contents
 
 - [Sensitive Words API](#sensitive-words-api)
-    - [Table of Contents](#table-of-contents)
-    - [Overview](#overview)
-    - [Endpoints](#endpoints)
-        - [External API](#external-api)
-        - [Internal API](#internal-api)
-    - [Exception Handling](#exception-handling)
-    - [DTOs and Entities](#dtos-and-entities)
-    - [Repositories](#repositories)
-    - [Services](#services)
-    - [Configuration](#configuration)
-    - [Swagger Documentation](#swagger-documentation)
-    - [Actuator Endpoints](#actuator-endpoints)
-    - [Design and Architectural Approach](#design-and-architectural-approach)
+  - [Table of Contents](#table-of-contents)
+  - [Overview](#overview)
+  - [Endpoints](#endpoints)
+    - [External API](#external-api)
+    - [Internal API](#internal-api)
+  - [Exception Handling](#exception-handling)
+  - [DTOs and Entities](#dtos-and-entities)
+  - [Repositories](#repositories)
+  - [Services](#services)
+  - [Configuration](#configuration)
+  - [Swagger Documentation](#swagger-documentation)
+  - [Actuator Endpoints](#actuator-endpoints)
+  - [Design and Architectural Approach](#design-and-architectural-approach)
 
 ## Overview
 
@@ -55,7 +55,7 @@ The application handles two custom exceptions:
 ## Repositories
 
 - **SensitiveWordRepository:** Interface for CRUD operations on sensitive words.
-- **JdbcSensitiveWordRepository:** Implementation of `SensitiveWordRepository` using JDBC template.
+- **MssqlJdbcSensitiveWordRepository:** Implementation of `SensitiveWordRepository` using JDBC template.
 
 ## Services
 
@@ -68,7 +68,7 @@ The services have been separated into interfaces and implementations for better 
 
 ## Configuration
 
-- **Database Configuration:** Uses H2 in-memory database with schema and data initialization.
+- **Database Configuration:** Uses Microsoft SQL Server as the database with schema initialization.
 - **Actuator Configuration:** Exposes actuator endpoints for health check and environment information.
 
 ### Swagger Documentation
