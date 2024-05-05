@@ -31,7 +31,7 @@ public class SensitiveWordsMaintenanceServiceTest {
     }
 
     @Test
-    void testCreateSensitiveWord_Success() {
+    void shouldCreateSensitiveWordSuccessfully() {
         String word = "newWord";
         SensitiveWord sensitiveWord = new SensitiveWord(1L, word);
         when(sensitiveWordRepository.findByWord(word)).thenReturn(null);
@@ -44,7 +44,7 @@ public class SensitiveWordsMaintenanceServiceTest {
     }
 
     @Test
-    void testCreateSensitiveWord_andAlreadyExists_ShouldThrowSensitiveWordAlreadyExistsException() {
+    void shouldThrowSensitiveWordAlreadyExistsExceptionWhenCreatingDuplicateWord() {
         String word = "existingWord";
         when(sensitiveWordRepository.findByWord(word)).thenReturn(new SensitiveWord(1L, word));
         SensitiveWordAlreadyExistsException ex = assertThrows(SensitiveWordAlreadyExistsException.class, () -> maintenanceService.createSensitiveWord(word));
@@ -52,28 +52,28 @@ public class SensitiveWordsMaintenanceServiceTest {
     }
 
     @Test
-    void testListAllSensitiveWords_Success() {
+    void shouldListAllSensitiveWordsSuccessfully() {
         when(sensitiveWordRepository.findAll()).thenReturn(List.of(new SensitiveWord(1L, "word1"), new SensitiveWord(2L, "word2")));
         List<SensitiveWord> words = maintenanceService.listAllSensitiveWords();
         assertEquals(words.size(), 2);
     }
 
     @Test
-    void testGetSensitiveWordById_Success() {
+    void shouldGetSensitiveWordByIdSuccessfully() {
         when(sensitiveWordRepository.findById(anyLong())).thenReturn(new SensitiveWord(1L, "word1"));
         SensitiveWord word = maintenanceService.getSensitiveWordById(1L);
         assertEquals("word1", word.getWord());
     }
 
     @Test
-    void testGetSensitiveWordById_ThrowsSensitiveWordNotFoundException() {
+    void shouldThrowSensitiveWordNotFoundExceptionWhenGettingNonExistentWordById() {
         when(sensitiveWordRepository.findById(anyLong())).thenReturn(null);
         SensitiveWordNotFoundException ex = assertThrows(SensitiveWordNotFoundException.class, () -> maintenanceService.getSensitiveWordById(1L));
         assertTrue(ex.getMessage().contains("Sensitive word with id 1 not found"));
     }
 
     @Test
-    void testUpdateSensitiveWordById_Success() {
+    void shouldUpdateSensitiveWordByIdSuccessfully() {
         SensitiveWord original = new SensitiveWord(1L, "Existing word");
         SensitiveWord updates = new SensitiveWord(1L, "Update word");
 
@@ -86,7 +86,7 @@ public class SensitiveWordsMaintenanceServiceTest {
     }
 
     @Test
-    void testUpdateSensitiveWordById_andDoesNotExist_ShouldThrowSensitiveWordNotFoundException() {
+    void shouldThrowSensitiveWordNotFoundExceptionWhenUpdatingNonExistentWordById() {
         SensitiveWord updates = new SensitiveWord(1L, "Update word");
         when(sensitiveWordRepository.findById(1L)).thenReturn(null);
         SensitiveWordNotFoundException ex = assertThrows(SensitiveWordNotFoundException.class, () -> maintenanceService.updateSensitiveWord(1L, updates));
@@ -94,7 +94,7 @@ public class SensitiveWordsMaintenanceServiceTest {
     }
 
     @Test
-    void testDeleteSensitiveWordById_Success() {
+    void shouldDeleteSensitiveWordByIdSuccessfully() {
         SensitiveWord sensitiveWord = new SensitiveWord(1L, "Delete");
         when(sensitiveWordRepository.findById(1L)).thenReturn(sensitiveWord);
         maintenanceService.deleteSensitiveWord(1L);
@@ -102,14 +102,14 @@ public class SensitiveWordsMaintenanceServiceTest {
     }
 
     @Test
-    void testDeleteSensitiveWordById_andDoesNotExist_ShouldThrowSensitiveWordNotFoundException() {
+    void shouldThrowSensitiveWordNotFoundExceptionWhenDeletingNonExistentWordById() {
         when(sensitiveWordRepository.findById(1L)).thenReturn(null);
         SensitiveWordNotFoundException ex = assertThrows(SensitiveWordNotFoundException.class, () -> maintenanceService.deleteSensitiveWord(1L));
         assertTrue(ex.getMessage().contains("Sensitive word with id 1 not found"));
     }
 
     @Test
-    void testListAllSensitiveWordsOrderByLengthWord_Desc_Success() {
+    void shouldListAllSensitiveWordsOrderByLengthWordDescendingSuccessfully() {
         SensitiveWord long_word = new SensitiveWord(1L, "long word");
         SensitiveWord longer_word = new SensitiveWord(2L, "longer word");
         SensitiveWord longest_word = new SensitiveWord(3L, "longest word");
@@ -125,7 +125,7 @@ public class SensitiveWordsMaintenanceServiceTest {
     }
 
     @Test
-    void testListAllSensitiveWordsOrderByLengthWord_Asc_Success() {
+    void shouldListAllSensitiveWordsOrderByLengthWordAscendingSuccessfully() {
         SensitiveWord longWord = new SensitiveWord(1L, "long word");
         SensitiveWord longerWord = new SensitiveWord(2L, "longer word");
         SensitiveWord longestWord = new SensitiveWord(3L, "longest word");
@@ -139,8 +139,4 @@ public class SensitiveWordsMaintenanceServiceTest {
         assertEquals(3, resultList.size());
         assertEquals(expectedList, resultList);
     }
-
-
-
-    // More tests to follow
 }

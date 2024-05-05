@@ -38,13 +38,12 @@ public class MssqlJdbcSensitiveWordRepository implements SensitiveWordRepository
 
     @Override
     public SensitiveWord findById(Long id) {
-        List<SensitiveWord> results = jdbcTemplate.query("SELECT * FROM sensitive_words WHERE id = ?", new Object[]{id}, new SensitiveWordRowMapper());
-        return results.isEmpty() ? null : results.get(0);
+        return jdbcTemplate.queryForObject("SELECT * FROM sensitive_words WHERE id = ?", new SensitiveWordRowMapper(), id);
     }
 
     @Override
     public SensitiveWord findByWord(String word) {
-        List<SensitiveWord> results = jdbcTemplate.query("SELECT * FROM sensitive_words WHERE word = ?", new Object[]{word}, new SensitiveWordRowMapper());
+        List<SensitiveWord> results = jdbcTemplate.query("SELECT * FROM sensitive_words WHERE word = ?", new SensitiveWordRowMapper(), word);
         return results.isEmpty() ? null : results.get(0);
     }
 

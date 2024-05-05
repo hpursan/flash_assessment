@@ -171,5 +171,4 @@ public class SensitiveWordsMaintenanceControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    // More tests to follow
 }

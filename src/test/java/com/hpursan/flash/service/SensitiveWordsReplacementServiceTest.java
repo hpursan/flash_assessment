@@ -27,7 +27,7 @@ public class SensitiveWordsReplacementServiceTest {
     }
 
     @Test
-    void testRedactSensitiveWords_NoSensitiveWords() {
+    void shouldNotRedactSensitiveWordsWhenNoSensitiveWordsExist() {
         String message = "This is a test message.";
         when(sensitiveWordsMaintenanceService.listAllSensitiveWordsOrderByLengthWord(false)).thenReturn(emptyList());
         String redactedMessage = sensitiveWordsReplacementService.redactSensitiveWords(message);
@@ -35,7 +35,7 @@ public class SensitiveWordsReplacementServiceTest {
     }
 
     @Test
-    void testRedactSensitiveWords_WithPhraseInSensitiveWords() {
+    void shouldRedactSensitivePhraseWhenPresentInSensitiveWords() {
 
         List<SensitiveWord> orderedList = List.of(new SensitiveWord(1L, "SELECT * FROM"));
 
@@ -46,7 +46,7 @@ public class SensitiveWordsReplacementServiceTest {
     }
 
     @Test
-    void testRedactSensitiveWords_WithWordInSensitiveWords() {
+    void shouldRedactSensitiveWordWhenPresentInSensitiveWords() {
 
         List<SensitiveWord> orderedList = List.of(new SensitiveWord(1L, "SELECT"));
 
@@ -57,7 +57,7 @@ public class SensitiveWordsReplacementServiceTest {
     }
 
     @Test
-    void testRedactSensitiveWords_WithWordInSensitiveWords_caseSensitivity() {
+    void shouldRedactSensitiveWordWithCaseInsensitiveMatch() {
 
         List<SensitiveWord> orderedList = List.of(new SensitiveWord(1L, "SELECT"));
 
@@ -68,7 +68,7 @@ public class SensitiveWordsReplacementServiceTest {
     }
 
     @Test
-    void testRedactSensitiveWords_WithWordInSensitiveWords_partialMatch() {
+    void shouldNotRedactPartiallyMatchingSensitiveWord() {
 
         List<SensitiveWord> orderedList = List.of(new SensitiveWord(1L, "SELECT"));
 
@@ -79,7 +79,7 @@ public class SensitiveWordsReplacementServiceTest {
     }
 
     @Test
-    void testRedactSensitiveWords_EmptyInput() {
+    void shouldHandleEmptyInputGracefully() {
         List<SensitiveWord> orderedList = List.of(new SensitiveWord(1L, "SELECT"));
 
         when(sensitiveWordsMaintenanceService.listAllSensitiveWordsOrderByLengthWord(false)).thenReturn(orderedList);

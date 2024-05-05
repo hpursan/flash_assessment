@@ -11,7 +11,7 @@ import static org.mockito.Mockito.when;
 public class SensitiveWordRowMapperTest {
 
     @Test
-    void mapRow_ValidResultSet_ReturnsCorrectSensitiveWord() throws SQLException {
+    void shouldMapValidResultSetToCorrectSensitiveWord() throws SQLException {
         ResultSet resultSet = mock(ResultSet.class);
         when(resultSet.getLong("id")).thenReturn(1L);
         when(resultSet.getString("word")).thenReturn("test");
